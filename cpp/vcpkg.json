@@ -1,0 +1,40 @@
+{
+  "name": "traductor-danes-espanol",
+  "version": "1.0.0",
+  "description": "C++ Native Danish-Spanish Translator with CTranslate2",
+  "dependencies": [
+    {
+      "name": "nlohmann-json"
+    },
+    {
+      "name": "sentencepiece"
+    },
+    {
+      "name": "qtbase",
+      "platform": "!static"
+    },
+    {
+      "name": "drogon",
+      "platform": "!static"
+    }
+  ],
+  "features": {
+    "ctranslate2": {
+      "description": "CTranslate2 for model inference",
+      "dependencies": []
+    },
+    "gui": {
+      "description": "Qt GUI application",
+      "dependencies": [
+        "qtbase"
+      ]
+    },
+    "rest": {
+      "description": "REST API server",
+      "dependencies": [
+        "drogon"
+      ]
+    }
+  },
+  "builtin-baseline": "faf665cf8aca288b636d9de887f5cdfa3cff1a9e"
+}

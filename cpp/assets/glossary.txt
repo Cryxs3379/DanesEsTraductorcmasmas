@@ -1,0 +1,18 @@
+# Spanish-Danish Glossary
+# Format: spanish_term=danish_term
+
+hola=hej
+adiós=farvel
+gracias=tak
+por favor=vær venlig
+disculpe=undskyld
+sí=ja
+no=nej
+buenos días=god morgen
+buenas tardes=god eftermiddag
+buenas noches=god aften
+mundo=verden
+cómo=hvordan
+estás=har du det
+bien=godt
+mal=dårligt

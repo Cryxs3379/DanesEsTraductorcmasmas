@@ -1,0 +1,19 @@
+{
+  "model_dir": "./models/nllb-600m",
+  "ct2_dir": "./models/nllb-600m-ct2-int8",
+  "beam_size": 4,
+  "max_input_tokens": 4096,
+  "default_max_new_tokens": 256,
+  "max_max_new_tokens": 8192,
+  "max_segment_chars": 800,
+  "ct2_inter_threads": 4,
+  "ct2_intra_threads": 4,
+  "source_lang": "spa_Latn",
+  "target_lang": "dan_Latn",
+  "formal_da": false,
+  "host": "0.0.0.0",
+  "port": 8000,
+  "cache_size": 1024,
+  "max_batch_size": 16,
+  "request_timeout": 300
+}

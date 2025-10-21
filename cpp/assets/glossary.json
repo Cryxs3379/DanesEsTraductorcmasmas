@@ -1,0 +1,15 @@
+{
+  "comment": "Example glossary for Spanish-Danish translation",
+  "terms": {
+    "hola": "hej",
+    "adiós": "farvel",
+    "gracias": "tak",
+    "por favor": "vær venlig",
+    "disculpe": "undskyld",
+    "sí": "ja",
+    "no": "nej",
+    "buenos días": "god morgen",
+    "buenas tardes": "god eftermiddag",
+    "buenas noches": "god aften"
+  }
+}
