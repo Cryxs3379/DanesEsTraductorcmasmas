@@ -2,6 +2,7 @@
 #include <regex>
 #include <sstream>
 #include <algorithm>
+#include <unordered_map>
 
 namespace traductor {
 
@@ -78,55 +79,81 @@ std::string Glossary::applyPreProcessing(const std::string& text) const {
         result = std::regex_replace(result, termRegex, "[[TERM::$1]]");
     }
     
-    // Mark protected entities with KEEP markers
+    // Marcar entidades protegidas con [[KEEP::...]]
     for (const auto& entity : entities) {
-        result = std::regex_replace(result, std::regex(std::regex_replace(entity.placeholder, 
-            std::regex(R"([.^$*+?()\[\]\\|{}])"), R"(\$&)")), 
-            "[[KEEP::" + entity.original + "]]");
+        // Escapar el placeholder para regex literal
+        std::string escaped = std::regex_replace(
+            entity.placeholder,
+            std::regex(R"([.^$*+?()\[\]\\|{}])"),
+            R"(\$&)"
+        );
+
+        result = std::regex_replace(
+            result,
+            std::regex(escaped),
+            "[[KEEP::" + entity.original + "]]"
+        );
     }
     
     return result;
 }
 
 std::string Glossary::applyPostProcessing(const std::string& text) const {
-    if (text.empty()) {
-        return text;
-    }
-    
+    if (text.empty()) return text;
+
     std::string result = text;
-    
-    // Create case-insensitive lookup for terms
+
+    // 1) Construir mapa case-insensitive para términos de glosario
     std::unordered_map<std::string, std::string> termsLower;
+    termsLower.reserve(terms_.size());
     for (const auto& [termEs, termDa] : terms_) {
-        std::string termLower = termEs;
-        std::transform(termLower.begin(), termLower.end(), termLower.begin(), ::tolower);
-        termsLower[termLower] = termDa;
+        std::string key = termEs;
+        std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+        termsLower.emplace(std::move(key), termDa);
     }
-    
-    // Process TERM markers
-    std::regex termPattern(R"(\[\[TERM::(.*?)\]\]");
-    result = std::regex_replace(result, termPattern, 
-        [&termsLower](const std::smatch& match) -> std::string {
-            std::string originalTerm = match[1].str();
-            std::string termLower = originalTerm;
-            std::transform(termLower.begin(), termLower.end(), termLower.begin(), ::tolower);
-            
-            auto it = termsLower.find(termLower);
-            if (it != termsLower.end()) {
-                return it->second;
+
+    // 2) Reemplazar marcadores [[TERM::...]] de forma manual (sin lambda)
+    {
+        const std::regex termPattern(R"(\[\[TERM::(.*?)\]\])");
+        std::string rebuilt;
+        rebuilt.reserve(result.size() + 64);
+
+        std::sregex_iterator it(result.begin(), result.end(), termPattern);
+        std::sregex_iterator end;
+        std::size_t last_pos = 0;
+
+        for (; it != end; ++it) {
+            const auto& m = *it;
+            // Copiar texto previo
+            rebuilt.append(result, last_pos, static_cast<std::size_t>(m.position()) - last_pos);
+
+            // Resolver el término
+            std::string originalTerm = m[1].str();
+            std::string key = originalTerm;
+            std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+
+            if (auto f = termsLower.find(key); f != termsLower.end()) {
+                rebuilt.append(f->second); // traducción del glosario
+            } else {
+                rebuilt.append(originalTerm); // fallback
             }
-            
-            return originalTerm; // Fallback: return original if not found
-        });
-    
-    // Process KEEP markers (restore protected entities)
-    std::regex keepPattern(R"(\[\[KEEP::(.*?)\]\]");
-    result = std::regex_replace(result, keepPattern, "$1");
-    
-    // Clean up any residual markers as safety measure
-    result = std::regex_replace(result, std::regex("\\[\\[TERM::(.*?)\\]\\]"), "$1");
-    result = std::regex_replace(result, std::regex("\\[\\[KEEP::(.*?)\\]\\]"), "$1");
-    
+
+            last_pos = static_cast<std::size_t>(m.position() + m.length());
+        }
+        rebuilt.append(result, last_pos, std::string::npos);
+        result.swap(rebuilt);
+    }
+
+    // 3) Restaurar marcadores [[KEEP::...]]
+    {
+        const std::regex keepPattern(R"(\[\[KEEP::(.*?)\]\])");
+        result = std::regex_replace(result, keepPattern, "$1");
+    }
+
+    // 4) Limpiezas por si quedara algún residuo
+    result = std::regex_replace(result, std::regex(R"(\[\[TERM::(.*?)\]\])"), "$1");
+    result = std::regex_replace(result, std::regex(R"(\[\[KEEP::(.*?)\]\])"), "$1");
+
     return result;
 }
 
@@ -136,15 +163,16 @@ std::pair<std::string, std::vector<Glossary::ProtectedEntity>> Glossary::protect
     
     // Protect URLs (http://, https://, www.)
     {
-        std::regex urlRegex(R"((https?://[^\s]+|www\.[^\s]+))");
-        std::sregex_iterator iter(text.begin(), text.end(), urlRegex);
+        const std::regex urlRegex(
+            R"((?:https?|ftp)://[^\s<>"']+)", std::regex::icase);
+        std::sregex_iterator iter(result.begin(), result.end(), urlRegex);
         std::sregex_iterator end;
         
         size_t urlIndex = 0;
         for (std::sregex_iterator i = iter; i != end; ++i, ++urlIndex) {
             ProtectedEntity entity;
             entity.type = "URL";
-            entity.original = (*i)[1].str();
+            entity.original = (*i)[0].str();
             entity.placeholder = createPlaceholder("URL", urlIndex);
             entities.push_back(entity);
             
@@ -158,8 +186,9 @@ std::pair<std::string, std::vector<Glossary::ProtectedEntity>> Glossary::protect
     
     // Protect emails
     {
-        std::regex emailRegex(R"(\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b)");
-        std::sregex_iterator iter(text.begin(), text.end(), emailRegex);
+        const std::regex emailRegex(
+            R"((?:[A-Za-z0-9._%+\-]+)@(?:[A-Za-z0-9.\-]+\.[A-Za-z]{2,}))", std::regex::icase);
+        std::sregex_iterator iter(result.begin(), result.end(), emailRegex);
         std::sregex_iterator end;
         
         size_t emailIndex = 0;
@@ -180,8 +209,9 @@ std::pair<std::string, std::vector<Glossary::ProtectedEntity>> Glossary::protect
     
     // Protect numbers (integers, decimals, with separators)
     {
-        std::regex numberRegex(R"(\b\d+(?:[.,]\d+)*\b)");
-        std::sregex_iterator iter(text.begin(), text.end(), numberRegex);
+        const std::regex numberRegex(
+            R"(\b\d{1,3}(?:[.,]\d{3})*(?:[.,]\d+)?\b)");
+        std::sregex_iterator iter(result.begin(), result.end(), numberRegex);
         std::sregex_iterator end;
         
         size_t numberIndex = 0;

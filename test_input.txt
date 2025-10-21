@@ -1,0 +1,3 @@
+Hola mundo, ¿cómo estás? Gracias por tu ayuda.
+Visita https://ejemplo.com y envía un email a contacto@test.com
+El teléfono es 123-456-7890.
