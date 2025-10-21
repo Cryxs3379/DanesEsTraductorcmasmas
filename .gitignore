@@ -89,6 +89,47 @@ coverage.xml
 docker-compose.override.yml
 
 # =============================================================================
+# C++ y CMake
+# =============================================================================
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.vcxproj*
+*.sln
+*.user
+*.suo
+*.ncb
+*.aps
+*.plg
+*.opt
+*.pdb
+*.idb
+*.pch
+*.sbr
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+[Bb]in
+[Dd]ebug*/
+*.obj
+*.tlog
+*.lastbuildstate
+*.recipe
+*.rules
+out/
+
+# C++ builds
+build/
+cpp/build/
+vcpkg_installed/
+cpp/vcpkg_installed/
+
+# =============================================================================
 # Sistema Operativo
 # =============================================================================
 .DS_Store
