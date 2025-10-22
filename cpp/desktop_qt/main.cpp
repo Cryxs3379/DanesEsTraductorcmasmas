@@ -2,12 +2,16 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QMessageBox>
+#include <QDir>
 #include "MainWindow.h"
 #include "../core/TranslatorEngine.h"
 #include "../core/Config.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
+    
+    // Force cwd to executable directory (so ./models/... always resolves correctly)
+    QDir::setCurrent(QCoreApplication::applicationDirPath());
     
     // Set application properties
     QApplication::setApplicationName("Traductor Danés-Español");

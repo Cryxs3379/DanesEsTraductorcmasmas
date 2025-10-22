@@ -33,54 +33,35 @@ target_include_directories(traductor_core PRIVATE
 # Find required packages
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(Threads REQUIRED)
-
-# Find Protobuf and Abseil (for SentencePiece dependencies)
 find_package(protobuf CONFIG REQUIRED)
 find_package(absl CONFIG REQUIRED)
 
-# SentencePiece optional via vcpkg
-find_package(sentencepiece CONFIG QUIET)
-if(sentencepiece_FOUND)
-    set(SENTENCEPIECE_FOUND ON)
-endif()
+# SentencePiece and CTranslate2 are found in parent CMake
 
 # Link libraries
 target_link_libraries(traductor_core PUBLIC
     nlohmann_json::nlohmann_json
     Threads::Threads
-)
-
-# Link SentencePiece if found
-if(SENTENCEPIECE_FOUND)
-    target_link_libraries(traductor_core PUBLIC sentencepiece::sentencepiece)
-    target_compile_definitions(traductor_core PRIVATE HAVE_SENTENCEPIECE)
-else()
-    message(WARNING "SentencePiece not available - core will use simplified tokenization")
-    target_compile_definitions(traductor_core PRIVATE SIMPLIFIED_MODE)
-endif()
-
-# Añadir enlaces explícitos a Protobuf y Abseil (Windows/MSVC necesita esto)
-target_link_libraries(traductor_core PUBLIC
+    sentencepiece::sentencepiece
     protobuf::libprotobuf
     absl::strings
     absl::flat_hash_map
     absl::hash
     absl::base
-    absl::raw_hash_set
     absl::flags
     absl::flags_parse
     absl::flags_usage
 )
 
-# Link CTranslate2 if available
-if(unofficial-ctranslate2_FOUND)
+# Compile definitions - enable SentencePiece and CTranslate2 if found
+target_compile_definitions(traductor_core PRIVATE HAVE_SENTENCEPIECE)
+
+if(ctranslate2_FOUND)
     target_link_libraries(traductor_core PUBLIC ctranslate2::ctranslate2)
     target_compile_definitions(traductor_core PRIVATE HAVE_CTRANSLATE2)
-elseif(ctranslate2_FOUND)
-    target_link_libraries(traductor_core PUBLIC ctranslate2)
-    target_compile_definitions(traductor_core PRIVATE HAVE_CTRANSLATE2)
+    message(STATUS "CTranslate2 found - enabling real translation")
 else()
-    message(WARNING "CTranslate2 not found - using simplified mode")
+    message(WARNING "CTranslate2 not found - using simplified mode (hardcoded translations)")
     target_compile_definitions(traductor_core PRIVATE SIMPLIFIED_MODE)
 endif()
 

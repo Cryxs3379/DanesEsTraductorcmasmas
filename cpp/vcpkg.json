@@ -9,10 +9,6 @@
             "protobuf",
             "abseil",
             {
-                "name": "ctranslate2",
-                "features": ["cpu"]
-            },
-            {
                 "name": "qtbase",
                 "platform": "!static",
                 "default-features": true
