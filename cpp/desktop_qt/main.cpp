@@ -14,8 +14,13 @@ int main(int argc, char *argv[]) {
     QApplication::setApplicationVersion("1.0.0");
     QApplication::setOrganizationName("TraductorApp");
     
-    // Initialize translator engine
+    // Initialize translator engine with explicit model paths
     traductor::Config config;
+    
+    // Set explicit model paths for GUI (relative to executable location)
+    config.setModelDir("./models/nllb-600m");
+    config.setCt2Dir("./models/nllb-600m-ct2-int8");
+    
     traductor::TranslatorEngine translator(config);
     
     // Show loading message

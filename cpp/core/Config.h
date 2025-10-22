@@ -18,6 +18,8 @@ public:
     // Model Configuration
     std::string modelDir() const { return modelDir_; }
     std::string ct2Dir() const { return ct2Dir_; }
+    void setModelDir(const std::string& dir) { modelDir_ = dir; }
+    void setCt2Dir(const std::string& dir) { ct2Dir_ = dir; }
     
     // Translation Parameters
     int beamSize() const { return beamSize_; }
