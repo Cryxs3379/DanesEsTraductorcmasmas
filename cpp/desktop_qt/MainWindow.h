@@ -12,15 +12,14 @@
 #include <QStatusBar>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QTimer>
 
-QT_BEGIN_NAMESPACE
-class QAction;
-class QTimer;
-QT_END_NAMESPACE
+// Necesario porque usamos traductor::Glossary::TermMap en miembros
+#include "../core/Glossary.h"
+#include "../core/TranslatorEngine.h"
 
 namespace traductor {
-    class TranslatorEngine;
-    class Glossary;
+    // TranslatorEngine ya incluido arriba
 }
 
 class MainWindow : public QMainWindow {
@@ -48,29 +47,27 @@ private:
     traductor::TranslatorEngine& translator_;
     
     // UI Components
-    QTabWidget* tabWidget_;
-    QTextEdit* textInput_;
-    QTextEdit* textOutput_;
-    QTextEdit* htmlInput_;
-    QTextEdit* htmlOutput_;
-    QComboBox* directionCombo_;
-    QCheckBox* formalCheckBox_;
-    QSpinBox* maxTokensSpinBox_;
-    QPushButton* translateButton_;
-    QPushButton* clearButton_;
-    QPushButton* translateHtmlButton_;
-    QPushButton* clearHtmlButton_;
-    QPushButton* loadGlossaryButton_;
+    QTabWidget* tabWidget_ = nullptr;
+    QTextEdit* textInput_ = nullptr;
+    QTextEdit* textOutput_ = nullptr;
+    QTextEdit* htmlInput_ = nullptr;
+    QTextEdit* htmlOutput_ = nullptr;
+    QComboBox* directionCombo_ = nullptr;
+    QCheckBox* formalCheckBox_ = nullptr;
+    QSpinBox* maxTokensSpinBox_ = nullptr;
+    QPushButton* translateButton_ = nullptr;
+    QPushButton* clearButton_ = nullptr;
+    QPushButton* translateHtmlButton_ = nullptr;
+    QPushButton* clearHtmlButton_ = nullptr;
+    QPushButton* loadGlossaryButton_ = nullptr;
     
     // Status components
-    QLabel* modelStatusLabel_;
-    QLabel* cacheStatsLabel_;
-    QLabel* latencyLabel_;
-    QProgressBar* progressBar_;
+    QLabel* modelStatusLabel_ = nullptr;
+    QLabel* cacheStatsLabel_ = nullptr;
+    QLabel* latencyLabel_ = nullptr;
+    QProgressBar* progressBar_ = nullptr;
     
     // State
     traductor::Glossary::TermMap glossary_;
-    QTimer* metricsTimer_;
+    QTimer* metricsTimer_ = nullptr;
 };
-
-// MOC will be handled automatically by CMake

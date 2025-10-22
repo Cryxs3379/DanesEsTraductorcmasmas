@@ -139,12 +139,12 @@ namespace traductor {
     } // namespace rest
 } // namespace traductor
 
-// Global translator instance
-std::unique_ptr<traductor::TranslatorEngine> g_translator;
-
 #ifdef DROGON_FOUND
+// Global translator instance (solo cuando Drogon está disponible)
+static std::unique_ptr<traductor::TranslatorEngine> g_translator;
+
 // Health endpoint
-void healthHandler(const HttpRequestPtr& req, std::function<void(const HttpResponsePtr&)>&& callback) {
+void healthHandler(const HttpRequestPtr& /*req*/, std::function<void(const HttpResponsePtr&)>&& callback) {
     auto health = g_translator->getHealthInfo();
     
     Json::Value response;
@@ -289,7 +289,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Translator initialized successfully" << std::endl;
     
     // Configure Drogon
-    app().setLogLevel(trivial::info);
+    app().setLogLevel(trantor::Logger::kInfo);
     
     // Set up routes
     app().registerHandler("/health", &healthHandler, {Get});

@@ -30,6 +30,20 @@ target_include_directories(traductor_core PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+# Find required packages
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(Threads REQUIRED)
+
+# Find Protobuf and Abseil (for SentencePiece dependencies)
+find_package(protobuf CONFIG REQUIRED)
+find_package(absl CONFIG REQUIRED)
+
+# SentencePiece optional via vcpkg
+find_package(sentencepiece CONFIG QUIET)
+if(sentencepiece_FOUND)
+    set(SENTENCEPIECE_FOUND ON)
+endif()
+
 # Link libraries
 target_link_libraries(traductor_core PUBLIC
     nlohmann_json::nlohmann_json
@@ -44,6 +58,19 @@ else()
     message(WARNING "SentencePiece not available - core will use simplified tokenization")
     target_compile_definitions(traductor_core PRIVATE SIMPLIFIED_MODE)
 endif()
+
+# Añadir enlaces explícitos a Protobuf y Abseil (Windows/MSVC necesita esto)
+target_link_libraries(traductor_core PUBLIC
+    protobuf::libprotobuf
+    absl::strings
+    absl::flat_hash_map
+    absl::hash
+    absl::base
+    absl::raw_hash_set
+    absl::flags
+    absl::flags_parse
+    absl::flags_usage
+)
 
 # Link CTranslate2 if available
 if(unofficial-ctranslate2_FOUND)

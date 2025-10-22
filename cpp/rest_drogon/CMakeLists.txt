@@ -6,7 +6,7 @@ if(Drogon_FOUND)
     
     target_link_libraries(traductor_rest PRIVATE
         traductor_core
-        drogon
+        Drogon::Drogon
     )
     
     set_target_properties(traductor_rest PROPERTIES
@@ -19,5 +19,18 @@ if(Drogon_FOUND)
         target_compile_options(traductor_rest PRIVATE -Wall -Wextra)
     endif()
 else()
-    message(STATUS "Drogon not found - skipping REST server target")
+    message(STATUS "Drogon not found - building REST stub implementation")
+    add_executable(traductor_rest main.cpp)
+    
+    target_link_libraries(traductor_rest PRIVATE traductor_core)
+    
+    set_target_properties(traductor_rest PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    )
+    
+    if(MSVC)
+        target_compile_options(traductor_rest PRIVATE /W4)
+    else()
+        target_compile_options(traductor_rest PRIVATE -Wall -Wextra)
+    endif()
 endif()

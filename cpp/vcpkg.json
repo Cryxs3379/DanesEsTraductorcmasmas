@@ -2,20 +2,21 @@
   "name": "traductor-danes-espanol",
   "version": "1.0.0",
   "description": "C++ Native Danish-Spanish Translator with CTranslate2",
+  "builtin-baseline": "faf665cf8aca288b636d9de887f5cdfa3cff1a9e",
   "dependencies": [
-    {
-      "name": "nlohmann-json"
-    },
-    {
-      "name": "sentencepiece"
-    },
+    "nlohmann-json",
+    "sentencepiece",
+    "protobuf",
+    "abseil",
     {
       "name": "qtbase",
-      "platform": "!static"
+      "platform": "!static",
+      "default-features": true
     },
     {
       "name": "drogon",
-      "platform": "!static"
+      "platform": "!static",
+      "default-features": true
     }
   ],
   "features": {
@@ -35,6 +36,5 @@
         "drogon"
       ]
     }
-  },
-  "builtin-baseline": "faf665cf8aca288b636d9de887f5cdfa3cff1a9e"
+  }
 }

@@ -66,32 +66,41 @@ cd cpp && chmod +x build.sh && ./build.sh
 
 ## 📋 Uso
 
-### CLI (Línea de Comandos)
-```bash
-# Traducción básica
-echo "Hola mundo" | build/bin/traductor_cli.exe --direction es-da
+### 🚀 Inicio Rápido (Windows)
+```cmd
+# Ejecutar script helper
+ejecutar_traductor.bat
+```
 
-# Con opciones avanzadas
-traductor_cli.exe --direction es-da --formal --max_tokens 256 --in input.txt --out output.txt --metrics
+### CLI (Línea de Comandos)
+```cmd
+cd cpp\build\bin\Release
+
+# Traducción básica
+traductor_cli.exe --direction es-da --in input.txt --out output.txt
+
+# Con glosario y métricas
+traductor_cli.exe --direction es-da --glossary ..\..\..\assets\glossary.txt --metrics
 
 # Traducción HTML
-traductor_cli.exe --direction da-es --html --glossary assets/glossary.txt < email.html
+traductor_cli.exe --direction da-es --html --formal
 ```
 
 ### GUI (Interfaz Gráfica)
-```bash
-build/bin/traductor_gui.exe
+```cmd
+# Windows
+cpp\build\bin\Release\traductor_gui.exe
+
+# Nota: Los plugins de Qt se copian automáticamente al compilar
 ```
 
 ### REST API
-```bash
+```cmd
 # Iniciar servidor
-build/bin/traductor_rest.exe
+cpp\build\bin\Release\traductor_rest.exe
 
-# Usar API
-curl -X POST http://localhost:8000/translate \
-  -H "Content-Type: application/json" \
-  -d '{"text":"Hola mundo","direction":"es-da"}'
+# Usar API (desde otra terminal)
+curl -X POST http://localhost:8000/translate -H "Content-Type: application/json" -d "{\"text\":\"Hola mundo\",\"direction\":\"es-da\"}"
 ```
 
 ## 🧪 Tests

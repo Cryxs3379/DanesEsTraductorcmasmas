@@ -118,4 +118,24 @@ if(WIN32)
                 "${CMAKE_BINARY_DIR}/bin"
         )
     endif()
+    
+    # Copy Qt6 platform plugins (needed for GUI)
+    if(Qt6_FOUND)
+        add_custom_command(TARGET copy_models POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+                "${CMAKE_BINARY_DIR}/bin/platforms"
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${CMAKE_BINARY_DIR}/vcpkg_installed/x64-windows/Qt6/plugins/platforms"
+                "${CMAKE_BINARY_DIR}/bin/platforms"
+            COMMENT "Copying Qt6 platform plugins"
+        )
+    endif()
+    
+    # Copy translation models (needed for all executables)
+    add_custom_command(TARGET copy_models POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/../models"
+            "${CMAKE_BINARY_DIR}/bin/models"
+        COMMENT "Copying translation models"
+    )
 endif()

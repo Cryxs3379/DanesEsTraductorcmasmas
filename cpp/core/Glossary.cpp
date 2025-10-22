@@ -160,77 +160,50 @@ std::string Glossary::applyPostProcessing(const std::string& text) const {
 std::pair<std::string, std::vector<Glossary::ProtectedEntity>> Glossary::protectEntities(const std::string& text) const {
     std::vector<ProtectedEntity> entities;
     std::string result = text;
-    
+
     // Protect URLs (http://, https://, www.)
     {
-        const std::regex urlRegex(
-            R"((?:https?|ftp)://[^\s<>"']+)", std::regex::icase);
-        std::sregex_iterator iter(result.begin(), result.end(), urlRegex);
-        std::sregex_iterator end;
-        
-        size_t urlIndex = 0;
-        for (std::sregex_iterator i = iter; i != end; ++i, ++urlIndex) {
-            ProtectedEntity entity;
-            entity.type = "URL";
-            entity.original = (*i)[0].str();
-            entity.placeholder = createPlaceholder("URL", urlIndex);
-            entities.push_back(entity);
-            
-            // Replace first occurrence
-            size_t pos = result.find(entity.original);
-            if (pos != std::string::npos) {
-                result.replace(pos, entity.original.length(), entity.placeholder);
-            }
+        const std::regex urlRegex(R"((https?://[^\s]+|www\.[^\s]+))");
+        std::sregex_iterator it(result.begin(), result.end(), urlRegex), end;
+        size_t idx = 0;
+        for (; it != end; ++it, ++idx) {
+            const std::string matched = (*it)[0].str();
+            ProtectedEntity e{ createPlaceholder("URL", idx), matched, "URL" };
+            entities.push_back(e);
+            size_t pos = result.find(matched);
+            if (pos != std::string::npos) result.replace(pos, matched.size(), e.placeholder);
         }
     }
-    
+
     // Protect emails
     {
-        const std::regex emailRegex(
-            R"((?:[A-Za-z0-9._%+\-]+)@(?:[A-Za-z0-9.\-]+\.[A-Za-z]{2,}))", std::regex::icase);
-        std::sregex_iterator iter(result.begin(), result.end(), emailRegex);
-        std::sregex_iterator end;
-        
-        size_t emailIndex = 0;
-        for (std::sregex_iterator i = iter; i != end; ++i, ++emailIndex) {
-            ProtectedEntity entity;
-            entity.type = "EMAIL";
-            entity.original = (*i)[0].str();
-            entity.placeholder = createPlaceholder("EMAIL", emailIndex);
-            entities.push_back(entity);
-            
-            // Replace first occurrence
-            size_t pos = result.find(entity.original);
-            if (pos != std::string::npos) {
-                result.replace(pos, entity.original.length(), entity.placeholder);
-            }
+        const std::regex emailRegex(R"(\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b)");
+        std::sregex_iterator it(result.begin(), result.end(), emailRegex), end;
+        size_t idx = 0;
+        for (; it != end; ++it, ++idx) {
+            const std::string matched = (*it)[0].str();
+            ProtectedEntity e{ createPlaceholder("EMAIL", idx), matched, "EMAIL" };
+            entities.push_back(e);
+            size_t pos = result.find(matched);
+            if (pos != std::string::npos) result.replace(pos, matched.size(), e.placeholder);
         }
     }
-    
+
     // Protect numbers (integers, decimals, with separators)
     {
-        const std::regex numberRegex(
-            R"(\b\d{1,3}(?:[.,]\d{3})*(?:[.,]\d+)?\b)");
-        std::sregex_iterator iter(result.begin(), result.end(), numberRegex);
-        std::sregex_iterator end;
-        
-        size_t numberIndex = 0;
-        for (std::sregex_iterator i = iter; i != end; ++i, ++numberIndex) {
-            ProtectedEntity entity;
-            entity.type = "NUMBER";
-            entity.original = (*i)[0].str();
-            entity.placeholder = createPlaceholder("NUM", numberIndex);
-            entities.push_back(entity);
-            
-            // Replace first occurrence
-            size_t pos = result.find(entity.original);
-            if (pos != std::string::npos) {
-                result.replace(pos, entity.original.length(), entity.placeholder);
-            }
+        const std::regex numberRegex(R"(\b\d{1,3}(?:[.]\d{3})*(?:[.,]\d+)?\b)");
+        std::sregex_iterator it(result.begin(), result.end(), numberRegex), end;
+        size_t idx = 0;
+        for (; it != end; ++it, ++idx) {
+            const std::string matched = (*it)[0].str();
+            ProtectedEntity e{ createPlaceholder("NUM", idx), matched, "NUMBER" };
+            entities.push_back(e);
+            size_t pos = result.find(matched);
+            if (pos != std::string::npos) result.replace(pos, matched.size(), e.placeholder);
         }
     }
-    
-    return std::make_pair(result, entities);
+
+    return { result, entities };
 }
 
 std::string Glossary::restoreEntities(const std::string& text, const std::vector<ProtectedEntity>& entities) const {
