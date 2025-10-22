@@ -308,9 +308,15 @@ void MainWindow::updateModelStatus() {
     if (health.modelLoaded && health.tokenizerLoaded) {
         modelStatusLabel_->setText("Modelo: ✓ Listo");
         modelStatusLabel_->setStyleSheet("color: green;");
+        modelStatusLabel_->setToolTip("Modelo cargado correctamente");
     } else {
         modelStatusLabel_->setText("Modelo: ✗ Error");
         modelStatusLabel_->setStyleSheet("color: red;");
+        
+        // Mostrar error detallado en tooltip
+        QString errorMsg = QString("Error: %1\n\nRutas esperadas:\n- Tokenizer: ./models/nllb-600m/sentencepiece.bpe.model\n- Modelo: ./models/nllb-600m-ct2-int8/")
+                          .arg(QString::fromStdString(health.lastError));
+        modelStatusLabel_->setToolTip(errorMsg);
     }
 }
 

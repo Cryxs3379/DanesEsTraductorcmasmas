@@ -1,0 +1,8 @@
+set(__QT_DEPLOY_TARGET_traductor_core_FILE C:/Users/PTRUJILLO/Desktop/Trujillo/DanesEsTraductorcmasmas/cpp/build_new/lib/Release/traductor_core.lib)
+set(__QT_DEPLOY_TARGET_traductor_core_TYPE STATIC_LIBRARY)
+set(__QT_DEPLOY_TARGET_traductor_cli_FILE C:/Users/PTRUJILLO/Desktop/Trujillo/DanesEsTraductorcmasmas/cpp/build_new/bin/Release/traductor_cli.exe)
+set(__QT_DEPLOY_TARGET_traductor_cli_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_traductor_cli_RUNTIME_DLLS C:/vcpkg/installed/x64-windows/bin/libprotobuf.dll;C:/vcpkg/installed/x64-windows/bin/abseil_dll.dll)
+set(__QT_DEPLOY_TARGET_traductor_gui_FILE C:/Users/PTRUJILLO/Desktop/Trujillo/DanesEsTraductorcmasmas/cpp/build_new/bin/Release/traductor_gui.exe)
+set(__QT_DEPLOY_TARGET_traductor_gui_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_traductor_gui_RUNTIME_DLLS C:/vcpkg/installed/x64-windows/bin/Qt6Widgets.dll;C:/vcpkg/installed/x64-windows/bin/Qt6Network.dll;C:/vcpkg/installed/x64-windows/bin/libprotobuf.dll;C:/vcpkg/installed/x64-windows/bin/abseil_dll.dll;C:/vcpkg/installed/x64-windows/bin/Qt6Gui.dll;C:/vcpkg/installed/x64-windows/bin/Qt6Core.dll)

@@ -414,6 +414,14 @@ std::string TranslatorEngine::translateSegmentSimple(const std::string& segment,
         result = std::regex_replace(result, std::regex("mundo", std::regex_constants::icase), "verden");
         result = std::regex_replace(result, std::regex("cómo", std::regex_constants::icase), "hvordan");
         result = std::regex_replace(result, std::regex("estás", std::regex_constants::icase), "har du det");
+        result = std::regex_replace(result, std::regex("buenos", std::regex_constants::icase), "gode");
+        result = std::regex_replace(result, std::regex("días", std::regex_constants::icase), "dage");
+        result = std::regex_replace(result, std::regex("gracias", std::regex_constants::icase), "tak");
+        result = std::regex_replace(result, std::regex("por", std::regex_constants::icase), "for");
+        result = std::regex_replace(result, std::regex("tu", std::regex_constants::icase), "din");
+        result = std::regex_replace(result, std::regex("ayuda", std::regex_constants::icase), "hjælp");
+        result = std::regex_replace(result, std::regex("que", std::regex_constants::icase), "hvad");
+        result = std::regex_replace(result, std::regex("tal", std::regex_constants::icase), "sådan");
         
         if (formal) {
             result = std::regex_replace(result, std::regex("Hej", std::regex_constants::icase), "Kære");
@@ -424,6 +432,14 @@ std::string TranslatorEngine::translateSegmentSimple(const std::string& segment,
         result = std::regex_replace(result, std::regex("verden", std::regex_constants::icase), "mundo");
         result = std::regex_replace(result, std::regex("hvordan", std::regex_constants::icase), "cómo");
         result = std::regex_replace(result, std::regex("har du det", std::regex_constants::icase), "estás");
+        result = std::regex_replace(result, std::regex("gode", std::regex_constants::icase), "buenos");
+        result = std::regex_replace(result, std::regex("dage", std::regex_constants::icase), "días");
+        result = std::regex_replace(result, std::regex("tak", std::regex_constants::icase), "gracias");
+        result = std::regex_replace(result, std::regex("for", std::regex_constants::icase), "por");
+        result = std::regex_replace(result, std::regex("din", std::regex_constants::icase), "tu");
+        result = std::regex_replace(result, std::regex("hjælp", std::regex_constants::icase), "ayuda");
+        result = std::regex_replace(result, std::regex("hvad", std::regex_constants::icase), "que");
+        result = std::regex_replace(result, std::regex("sådan", std::regex_constants::icase), "tal");
     }
     
     return result;

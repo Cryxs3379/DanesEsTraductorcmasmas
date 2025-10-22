@@ -3,27 +3,27 @@
   "version": "1.0.0",
   "description": "C++ Native Danish-Spanish Translator with CTranslate2",
   "builtin-baseline": "faf665cf8aca288b636d9de887f5cdfa3cff1a9e",
-  "dependencies": [
-    "nlohmann-json",
-    "sentencepiece",
-    "protobuf",
-    "abseil",
-    {
-      "name": "qtbase",
-      "platform": "!static",
-      "default-features": true
-    },
-    {
-      "name": "drogon",
-      "platform": "!static",
-      "default-features": true
-    }
-  ],
+        "dependencies": [
+            "nlohmann-json",
+            "sentencepiece",
+            "protobuf",
+            "abseil",
+            {
+                "name": "ctranslate2",
+                "features": ["cpu"]
+            },
+            {
+                "name": "qtbase",
+                "platform": "!static",
+                "default-features": true
+            },
+            {
+                "name": "drogon",
+                "platform": "!static",
+                "default-features": true
+            }
+        ],
   "features": {
-    "ctranslate2": {
-      "description": "CTranslate2 for model inference",
-      "dependencies": []
-    },
     "gui": {
       "description": "Qt GUI application",
       "dependencies": [
